@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Pain</string>
+    <string name="guardado">Lienzo guardado</string>
+    <string name="error">Error al guardar el lienzo</string>
+</resources>
