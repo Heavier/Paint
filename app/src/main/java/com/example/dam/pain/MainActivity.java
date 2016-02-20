@@ -1,10 +1,15 @@
 package com.example.dam.pain;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 
@@ -16,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     private android.widget.ImageButton btRed;
     private android.widget.ImageButton ibColor;
     private android.widget.RelativeLayout view;
-
     private boolean openColor,openForma, mostrar;
     private ImageButton ibFormas;
     private ImageButton ibCuadrado;
@@ -30,12 +34,16 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton ibFill;
     private ImageButton ibFillStroke;
     private ImageButton ibStroke;
-    int grosor = 10;
+    private int grosor = 10;
+    private Uri uri;
+    private Bitmap bitmap;
+    private android.widget.ImageView ivImagen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.ivImagen = (ImageView) findViewById(R.id.ivImagen);
         this.ibStroke = (ImageButton) findViewById(R.id.ibStroke);
         this.ibFillStroke = (ImageButton) findViewById(R.id.ibFillStroke);
         this.ibFill = (ImageButton) findViewById(R.id.ibFill);
@@ -78,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
                 vista.setGrosor(grosor);
             }
         });
+
+        Uri original = getIntent().getData();
+        if (original != null) {
+            ivImagen.setImageURI(original);
+            vista.importar(bitmap);
+        }
     }
 
 
@@ -98,11 +112,9 @@ public class MainActivity extends AppCompatActivity {
     public void setRed(View view) {
         vista.setRed();
     }
-
     public void setGreen(View view) {
         vista.setGreen();
     }
-
     public void setBlue(View view) {
         vista.setBlue();
     }
@@ -137,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
     public void mostrar(View view) {
         if (mostrar) {
             ibGuardar.setVisibility(View.VISIBLE);
+            ivImagen.setVisibility(View.VISIBLE);
             ibLimpiar.setVisibility(View.VISIBLE);
             ibImportar.setVisibility(View.VISIBLE);
             ibColor.setVisibility(View.VISIBLE);
@@ -148,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
             mostrar = false;
         }else{
             ibGuardar.setVisibility(View.GONE);
+            ivImagen.setVisibility(View.GONE);
             ibLimpiar.setVisibility(View.GONE);
             ibImportar.setVisibility(View.GONE);
             ibColor.setVisibility(View.GONE);
@@ -161,7 +175,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void importar(View view) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, 1);
+        }
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == 1) {
+
+            uri = data.getData();
+            if (uri != null) {
+                ivImagen.setImageURI(uri);
+                bitmap = ((BitmapDrawable)ivImagen.getDrawable()).getBitmap();
+                vista.importar(bitmap);
+            }
+        }
     }
 
     public void limpiar(View view) {
@@ -179,6 +211,5 @@ public class MainActivity extends AppCompatActivity {
     public void stroke(View view) {
         vista.stroke();
     }
-
 
 }

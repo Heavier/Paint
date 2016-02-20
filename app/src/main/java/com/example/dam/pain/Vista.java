@@ -6,8 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
 import android.os.Environment;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -169,5 +167,17 @@ public class Vista extends View {
 
     public void setGrosor(int grosor) {
         pincel.setStrokeWidth(grosor);
+    }
+
+    public void importar(Bitmap bitmap) {
+        /**
+         * Qué es un bitmap mutable?
+         * Permite editar el bitmap una vez creado, no me refiero a la manera habitual sino, por ejemplo
+         * la forma en que trabaja StringBuilder con las cadenas de texto.
+         * También ahorra memoria.
+         */
+        Bitmap workingBitmap = Bitmap.createBitmap(bitmap); // Inmutable
+        mapaDeBits = workingBitmap.copy(Bitmap.Config.ARGB_8888, true); // Mutable
+        lienzoDeFondo = new Canvas(mapaDeBits);
     }
 }
