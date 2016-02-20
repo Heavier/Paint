@@ -3,10 +3,10 @@ package com.example.dam.pain;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,26 +14,42 @@ public class MainActivity extends AppCompatActivity {
     private android.widget.ImageButton btBlue;
     private android.widget.ImageButton btGreen;
     private android.widget.ImageButton btRed;
-    private android.widget.ImageButton btColor;
+    private android.widget.ImageButton ibColor;
     private android.widget.RelativeLayout view;
 
-    private boolean openColor;
+    private boolean openColor,openForma, mostrar;
     private ImageButton ibFormas;
     private ImageButton ibCuadrado;
     private ImageButton ibCirculo;
     private ImageButton ibLibre;
-    private boolean openForma;
+    private ImageButton ibGuardar;
+    private android.widget.SeekBar sbGrosor;
+    private ImageButton ibMostrar;
+    private ImageButton ibImportar;
+    private ImageButton ibLimpiar;
+    private ImageButton ibFill;
+    private ImageButton ibFillStroke;
+    private ImageButton ibStroke;
+    int grosor = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.ibStroke = (ImageButton) findViewById(R.id.ibStroke);
+        this.ibFillStroke = (ImageButton) findViewById(R.id.ibFillStroke);
+        this.ibFill = (ImageButton) findViewById(R.id.ibFill);
+        this.ibLimpiar = (ImageButton) findViewById(R.id.ibLimpiar);
+        this.ibImportar = (ImageButton) findViewById(R.id.ibImportar);
+        this.ibMostrar = (ImageButton) findViewById(R.id.ibMostrar);
+        this.sbGrosor = (SeekBar) findViewById(R.id.sbGrosor);
+        this.ibGuardar = (ImageButton) findViewById(R.id.ibGuardar);
         this.ibLibre = (ImageButton) findViewById(R.id.ibLibre);
         this.ibCirculo = (ImageButton) findViewById(R.id.ibCirculo);
         this.ibCuadrado = (ImageButton) findViewById(R.id.ibCuadrado);
         this.ibFormas = (ImageButton) findViewById(R.id.ibFormas);
         this.view = (RelativeLayout) findViewById(R.id.view);
-        this.btColor = (ImageButton) findViewById(R.id.btColor);
+        this.ibColor = (ImageButton) findViewById(R.id.ibColor);
         this.btRed = (ImageButton) findViewById(R.id.btRed);
         this.btGreen = (ImageButton) findViewById(R.id.btGreen);
         this.btBlue = (ImageButton) findViewById(R.id.btBlue);
@@ -42,8 +58,26 @@ public class MainActivity extends AppCompatActivity {
         // Inicia el booleano de los botones.
         openColor = true;
         openForma = true;
+        mostrar = true;
 
         vista = (Vista) findViewById(R.id.vista);
+
+        sbGrosor.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                grosor = progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                vista.setGrosor(grosor);
+            }
+        });
     }
 
 
@@ -99,4 +133,52 @@ public class MainActivity extends AppCompatActivity {
     public void guardar(View view) {
         vista.guardar(this);
     }
+
+    public void mostrar(View view) {
+        if (mostrar) {
+            ibGuardar.setVisibility(View.VISIBLE);
+            ibLimpiar.setVisibility(View.VISIBLE);
+            ibImportar.setVisibility(View.VISIBLE);
+            ibColor.setVisibility(View.VISIBLE);
+            ibFill.setVisibility(View.VISIBLE);
+            ibFillStroke.setVisibility(View.VISIBLE);
+            ibStroke.setVisibility(View.VISIBLE);
+            sbGrosor.setVisibility(View.VISIBLE);
+            ibFormas.setVisibility(View.VISIBLE);
+            mostrar = false;
+        }else{
+            ibGuardar.setVisibility(View.GONE);
+            ibLimpiar.setVisibility(View.GONE);
+            ibImportar.setVisibility(View.GONE);
+            ibColor.setVisibility(View.GONE);
+            ibFill.setVisibility(View.GONE);
+            ibFillStroke.setVisibility(View.GONE);
+            ibStroke.setVisibility(View.GONE);
+            sbGrosor.setVisibility(View.GONE);
+            ibFormas.setVisibility(View.GONE);
+            mostrar = true;
+        }
+    }
+
+    public void importar(View view) {
+
+    }
+
+    public void limpiar(View view) {
+        vista.limpiar();
+    }
+
+    public void fill(View view) {
+        vista.fill();
+    }
+
+    public void fillStroke(View view) {
+        vista.fillStroke();
+    }
+
+    public void stroke(View view) {
+        vista.stroke();
+    }
+
+
 }

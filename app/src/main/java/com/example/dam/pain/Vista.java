@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.os.Environment;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 
 public class Vista extends View {
+    private int w, h;
     private float x0, y0, x1, y1, x2, y2;
     private Paint pincel;
     private Bitmap mapaDeBits;
@@ -28,8 +30,8 @@ public class Vista extends View {
         super(context, attributeSet);
         pincel = new Paint();
         setRed();
+        stroke();
         pincel.setAntiAlias(true);
-
         pincel.setStrokeWidth(10);
         figura = 1; //Libre
     }
@@ -37,6 +39,8 @@ public class Vista extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        this.w = w;
+        this.h = h;
         mapaDeBits = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         lienzoDeFondo = new Canvas(mapaDeBits);
     }
@@ -62,16 +66,13 @@ public class Vista extends View {
                 y1 = y;
                 switch (figura) {
                     case 1: // Libre
-                        pincel.setStyle(Paint.Style.STROKE);
                         lienzoDeFondo.drawPath(path, pincel);
                         path.quadTo(x0, y0, (x + x1) / 2, (y + y1) / 2);
                         break;
                     case 2: // Cuadrado
-                        //pincel.setStyle(Paint.Style.FILL);
                         lienzoDeFondo.drawRect(Math.min(x2, x1), Math.min(y2, y1), Math.max(x2, x1), Math.max(y2, y1), pincel);
                         break;
                     case 3: // Circulo
-                        pincel.setStyle(Paint.Style.FILL);
                         float radio = (float) Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2)); // Pitágoras
                         lienzoDeFondo.drawCircle(x2, y2, radio, pincel);
                         break;
@@ -147,5 +148,26 @@ public class Vista extends View {
             e.printStackTrace();
             Toast.makeText(context, R.string.error, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void limpiar() {
+        mapaDeBits = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        lienzoDeFondo = new Canvas(mapaDeBits);
+    }
+
+    public void fill() {
+        pincel.setStyle(Paint.Style.FILL);
+    }
+
+    public void fillStroke() {
+        pincel.setStyle(Paint.Style.FILL_AND_STROKE);
+    }
+
+    public void stroke() {
+        pincel.setStyle(Paint.Style.STROKE);
+    }
+
+    public void setGrosor(int grosor) {
+        pincel.setStrokeWidth(grosor);
     }
 }
